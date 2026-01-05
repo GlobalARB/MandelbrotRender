@@ -19,6 +19,7 @@ from typing import Optional
 import numpy as np
 from tqdm import tqdm
 
+from mandelbrot_zoom.core.mandelbrot import get_backend_info
 from mandelbrot_zoom.rendering.frame_renderer import (
     FrameRenderer,
     ZoomConfig,
@@ -31,9 +32,9 @@ from mandelbrot_zoom.video.assembler import VideoAssembler, FrameWriter
 @dataclass
 class VideoConfig:
     """Complete configuration for video generation."""
-    # Target location (Seahorse Valley)
-    center_real: float = -0.7463
-    center_imag: float = 0.1102
+    # Target location (Mini Mandelbrot)
+    center_real: float = -1.7497591
+    center_imag: float = 0.0000001
 
     # Video specs
     resolution: tuple = (1920, 1080)
@@ -42,7 +43,7 @@ class VideoConfig:
 
     # Zoom parameters
     initial_width: float = 4.0
-    final_width: float = 1e-10
+    final_width: float = 1e-5  # Slower zoom (was 1e-10)
 
     # Quality settings
     supersample_factor: int = 2
@@ -73,11 +74,11 @@ def main():
 
     # Target location
     parser.add_argument(
-        '--center-real', type=float, default=-0.7463,
+        '--center-real', type=float, default=-1.7497591,
         help='Real component of zoom center'
     )
     parser.add_argument(
-        '--center-imag', type=float, default=0.1102,
+        '--center-imag', type=float, default=0.0000001,
         help='Imaginary component of zoom center'
     )
 
@@ -171,16 +172,21 @@ def main():
 
     # Calculate total frames
     total_frames = config.fps * config.duration_seconds
+    preview_duration = 5  # Preview shows 5 seconds of video
     if args.preview:
-        total_frames = 10
+        total_frames = config.fps * preview_duration  # 150 frames for 5 sec preview
+        # For preview, don't zoom as deep - just show first portion of zoom
+        config.final_width = config.initial_width * (config.final_width / config.initial_width) ** (preview_duration / config.duration_seconds)
         config.output_filename = 'preview.mp4'
 
     print(f"{'=' * 60}")
     print(f"Mandelbrot Deep Zoom Video Generator")
     print(f"{'=' * 60}")
+    print(f"Backend:       {get_backend_info()}")
     print(f"Resolution:    {config.resolution[0]}x{config.resolution[1]}")
     print(f"Frames:        {total_frames} @ {config.fps}fps")
-    print(f"Zoom:          {config.initial_width} -> {config.final_width}")
+    print(f"Duration:      {total_frames / config.fps:.1f} seconds")
+    print(f"Zoom:          {config.initial_width} -> {config.final_width:.2e}")
     print(f"Center:        ({config.center_real}, {config.center_imag}i)")
     print(f"Palette:       {config.palette_name}")
     print(f"Supersampling: {config.supersample_factor}x")
