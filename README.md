@@ -8,15 +8,15 @@ Features Numba JIT compilation for near-C performance, supersampling anti-aliasi
 
 ## ✨ Features
 
-- 🚀 **High Performance:** Numba JIT compilation + NumPy vectorization for fast rendering
-- 🎨 **Visual Quality:** 1920×1080 resolution with 2x supersampling anti-aliasing
-- 🔍 **Deep Zoom:** Exponential zoom from 4.0 to 1e-5 width (100,000× magnification)
-- 🌈 **Psychedelic Colors:** Dynamic color cycling through customizable palettes
-- 🎯 **Flexible Targets:** Configurable zoom centers (defaults to Seahorse Valley mini-Mandelbrot)
-- 📊 **Progress Tracking:** Real-time rendering progress with ETA
-- 🎬 **FFmpeg Integration:** High-quality H.264 encoding with web-optimized output
+- **High Performance:** Numba JIT compilation + NumPy vectorization for fast rendering
+- **Visual Quality:** 1920×1080 resolution with 2x supersampling anti-aliasing
+- **Deep Zoom:** Exponential zoom from 4.0 to 1e-5 width (100,000× magnification)
+- **Psychedelic Colors:** Dynamic color cycling through customizable palettes
+- **Flexible Targets:** Configurable zoom centers (defaults to Seahorse Valley mini-Mandelbrot)
+- **Progress Tracking:** Real-time rendering progress with ETA
+- **FFmpeg Integration:** High-quality H.264 encoding with web-optimized output
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
