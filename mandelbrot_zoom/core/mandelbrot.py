@@ -8,6 +8,11 @@ import numpy as np
 import numba
 
 
+def get_backend_info() -> str:
+    """Return information about the computation backend."""
+    return f"Numba {numba.__version__} (JIT, parallel) + NumPy {np.__version__}"
+
+
 @numba.njit(parallel=True, cache=True)
 def mandelbrot_frame(
     center_real: float,

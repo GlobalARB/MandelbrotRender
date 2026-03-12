@@ -233,6 +233,17 @@ def main():
     print(f"\nRendering {total_frames} frames...")
     video_assembler.start_pipe()
 
+    # Save 10 snapshot images throughout the render for trajectory verification
+    snapshot_dir = output_dir / 'snapshots'
+    snapshot_dir.mkdir(parents=True, exist_ok=True)
+    num_snapshots = 10
+    snapshot_frames = set(
+        int(i * (total_frames - 1) / (num_snapshots - 1))
+        for i in range(num_snapshots)
+    )
+    import datetime
+    from PIL import Image as PILImage
+
     for frame_num in tqdm(range(total_frames), desc="Rendering", unit="frame"):
         # Calculate max iterations for this zoom level
         max_iter = renderer.compute_max_iter_for_zoom(zoom_widths[frame_num])
@@ -259,6 +270,13 @@ def main():
 
         # Write to video
         video_assembler.write_frame(rgb_frame)
+
+        # Save snapshot images at key frames for zoom trajectory verification
+        if frame_num in snapshot_frames:
+            ts = datetime.datetime.now().strftime('%H%M%S')
+            snap_path = snapshot_dir / f'snap_{frame_num:05d}_t{ts}_zoom{zoom_config.width:.2e}.png'
+            PILImage.fromarray(rgb_frame).save(snap_path)
+            tqdm.write(f"  📸 Snapshot saved: {snap_path.name} (zoom width: {zoom_config.width:.2e})")
 
         # Optionally save frame image
         if frame_writer:
